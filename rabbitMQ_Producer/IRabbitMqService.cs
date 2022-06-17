@@ -22,11 +22,25 @@ namespace rabbitMQ
 		{
 			// Не забудьте вынести значения "localhost" и "MyQueue"
 			// в файл конфигурации
-			var factory = new ConnectionFactory() { HostName = "10.10.11.18" };
+			var factory = new ConnectionFactory() {
+				UserName = "guest", 
+				Password = "guest", 
+				HostName = "10.10.11.18", 
+				Port = 5672, 
+				VirtualHost = "/"
+			};
 			using (var connection = factory.CreateConnection())
 			using (var channel = connection.CreateModel())
 			{
-				channel.QueueDeclare(queue: "MyQueue",
+                channel.ExchangeDeclare(
+                    exchange: "my_exchange",
+                    type: "direct",
+                    durable: false,
+                    autoDelete: false,
+                    arguments: null
+                );
+
+                channel.QueueDeclare(queue: "MyQueue",
 							   durable: false,
 							   exclusive: false,
 							   autoDelete: false,

@@ -18,10 +18,21 @@ namespace rabbitMQ_Consumer.RabbitMq
 		{
 			// Не забудьте вынести значения "localhost" и "MyQueue"
 			// в файл конфигурации
-			var factory = new ConnectionFactory { HostName = "10.10.11.18" };
+			var factory = new ConnectionFactory {
+				UserName = "guest",
+				Password = "guest",
+				HostName = "10.10.11.18",
+				Port = 5672,
+				VirtualHost = "/"
+			};
 			_connection = factory.CreateConnection();
 			_channel = _connection.CreateModel();
-			_channel.QueueDeclare(queue: "MyQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+			_channel.QueueDeclare(
+				queue: "MyQueue", 
+				durable: false, 
+				exclusive: false, 
+				autoDelete: false, 
+				arguments: null);
 		}
 
 		protected override Task ExecuteAsync(CancellationToken stoppingToken)

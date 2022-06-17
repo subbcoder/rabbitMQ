@@ -9,7 +9,13 @@ namespace rabbitMQ_Consumer_Console
 	{
 		static void Main(string[] args)
 		{
-			var factory = new ConnectionFactory() { HostName = "10.10.11.18" };
+			var factory = new ConnectionFactory() {
+				UserName = "guest",
+				Password = "guest",
+				HostName = "10.10.11.18",
+				Port = 5672,
+				VirtualHost = "/"
+			};
 			//var factory = new ConnectionFactory() { Uri = new Uri("строка_подключения_облако") };
 			using (var connection = factory.CreateConnection())
 			using (var channel = connection.CreateModel())
