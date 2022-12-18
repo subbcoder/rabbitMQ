@@ -19,8 +19,8 @@ namespace rabbitMQ_Consumer.RabbitMq
 			// Не забудьте вынести значения "localhost" и "MyQueue"
 			// в файл конфигурации
 			var factory = new ConnectionFactory {
-				UserName = "guest",
-				Password = "guest",
+				UserName = "user",
+				Password = "1234",
 				HostName = "10.10.11.18",
 				Port = 5672,
 				VirtualHost = "/"
@@ -45,7 +45,7 @@ namespace rabbitMQ_Consumer.RabbitMq
 				var content = Encoding.UTF8.GetString(ea.Body.ToArray());
 
 				// Каким-то образом обрабатываем полученное сообщение
-				Debug.WriteLine($"Получено сообщение: {content}");
+				Console.WriteLine($"Получено сообщение: {content}");
 
 				_channel.BasicAck(ea.DeliveryTag, false);
 			};

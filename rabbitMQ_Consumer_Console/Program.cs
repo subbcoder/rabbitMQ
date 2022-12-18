@@ -10,8 +10,8 @@ namespace rabbitMQ_Consumer_Console
 		static void Main(string[] args)
 		{
 			var factory = new ConnectionFactory() {
-				UserName = "guest",
-				Password = "guest",
+				UserName = "user",
+				Password = "1234",
 				HostName = "10.10.11.18",
 				Port = 5672,
 				VirtualHost = "/"
@@ -20,7 +20,7 @@ namespace rabbitMQ_Consumer_Console
 			using (var connection = factory.CreateConnection())
 			using (var channel = connection.CreateModel())
 			{
-				channel.QueueDeclare(queue: "MyQueue",
+				channel.QueueDeclare(queue: "MyQueue1",
 									 durable: false,
 									 exclusive: false,
 									 autoDelete: false,
@@ -33,7 +33,7 @@ namespace rabbitMQ_Consumer_Console
 					var message = Encoding.UTF8.GetString(body);
 					Console.WriteLine(" [x] Received {0}", message);
 				};
-				channel.BasicConsume(queue: "MyQueue",
+				channel.BasicConsume(queue: "MyQueue1",
 									 autoAck: true,
 									 consumer: consumer);
 

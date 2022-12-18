@@ -23,8 +23,8 @@ namespace rabbitMQ
 			// Не забудьте вынести значения "localhost" и "MyQueue"
 			// в файл конфигурации
 			var factory = new ConnectionFactory() {
-				UserName = "guest", 
-				Password = "guest", 
+				UserName = "user", 
+				Password = "1234", 
 				HostName = "10.10.11.18", 
 				Port = 5672, 
 				VirtualHost = "/"
@@ -34,22 +34,47 @@ namespace rabbitMQ
 			{
                 channel.ExchangeDeclare(
                     exchange: "my_exchange",
-                    type: "direct",
+                    type: "direct", //  topic fanout 
                     durable: false,
                     autoDelete: false,
                     arguments: null
                 );
 
+				// Создаем две очереди
                 channel.QueueDeclare(queue: "MyQueue",
 							   durable: false,
 							   exclusive: false,
 							   autoDelete: false,
-							   arguments: null);
+							   arguments: null
+							);
+
+				channel.QueueDeclare(queue: "MyQueue1",
+							   durable: false,
+							   exclusive: false,
+							   autoDelete: false,
+							   arguments: null
+							);
+
+				// СВязываем очереди с обмеником и ключем
+				channel.QueueBind(
+								queue: "MyQueue",
+								exchange: "my_exchange",
+								routingKey: "my_key",
+								arguments: null
+							);
+
+				channel.QueueBind(
+								queue: "MyQueue1",
+								exchange: "my_exchange",
+								routingKey: "my_key",
+								arguments: null
+							);
 
 				var body = Encoding.UTF8.GetBytes(message);
 
-				channel.BasicPublish(exchange: "",
-							   routingKey: "MyQueue",
+				// Отправляем сообщение в обменик
+				channel.BasicPublish(exchange: "my_exchange",
+							   routingKey: "my_key",
 							   basicProperties: null,
 							   body: body);
 			}
