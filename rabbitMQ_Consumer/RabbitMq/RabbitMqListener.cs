@@ -34,6 +34,7 @@ namespace rabbitMQ_Consumer.RabbitMq
 
 			_channel.ExchangeDeclarePassive(sExchangeName);
 
+
 			//QueueDeclareOk ok = _channel.QueueDeclarePassive(sQueueName);
 
 			//if (ok.MessageCount > 0)
