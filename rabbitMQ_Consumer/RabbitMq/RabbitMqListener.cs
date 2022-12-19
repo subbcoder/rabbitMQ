@@ -13,7 +13,6 @@ namespace rabbitMQ_Consumer.RabbitMq
 	{
 		private IConnection _connection;
 		private IModel _channel;
-
 		public RabbitMqListener()
 		{
 			// Не забудьте вынести значения "localhost" и "MyQueue"
@@ -23,16 +22,51 @@ namespace rabbitMQ_Consumer.RabbitMq
 				Password = "1234",
 				HostName = "10.10.11.18",
 				Port = 5672,
-				VirtualHost = "/"
+				VirtualHost = "/forUser",
+				AutomaticRecoveryEnabled = true
 			};
 			_connection = factory.CreateConnection();
 			_channel = _connection.CreateModel();
-			_channel.QueueDeclare(
-				queue: "MyQueue", 
-				durable: false, 
-				exclusive: false, 
-				autoDelete: false, 
-				arguments: null);
+
+			string sExchangeName = "my_exchange";
+			string sQueueName = "MyQueue";
+			string sКoutingKey = "my_key";
+
+			_channel.ExchangeDeclarePassive(sExchangeName);
+
+			//QueueDeclareOk ok = _channel.QueueDeclarePassive(sQueueName);
+
+			//if (ok.MessageCount > 0)
+			//{
+			//	// Bind the queue to the exchange
+			//	_channel.QueueBind(
+			//			queue: sQueueName,
+			//			exchange: sExchangeName,
+			//			routingKey: sКoutingKey,
+			//			arguments: null
+			//		);
+			//}
+			//else
+            {
+				_channel.QueueDeclare(
+						queue: sQueueName, 
+						durable: false, 
+						exclusive: false, 
+						autoDelete: true, 
+						arguments: null
+					);
+				// Bind the queue to the exchange
+				_channel.QueueBind(
+						queue: sQueueName,
+						exchange: sExchangeName,
+						routingKey: sКoutingKey,
+						arguments: null
+					);
+
+			}
+			// Хотя это все извращение.
+			// queue.declare — это идемпотентная операция. Итак, если вы запустите его один, два, N раз, результат все равно будет таким же.
+
 		}
 
 		protected override Task ExecuteAsync(CancellationToken stoppingToken)

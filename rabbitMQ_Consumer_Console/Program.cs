@@ -14,7 +14,8 @@ namespace rabbitMQ_Consumer_Console
 				Password = "1234",
 				HostName = "10.10.11.18",
 				Port = 5672,
-				VirtualHost = "/"
+				VirtualHost = "/forUser",
+				AutomaticRecoveryEnabled = true
 			};
 			//var factory = new ConnectionFactory() { Uri = new Uri("строка_подключения_облако") };
 			using (var connection = factory.CreateConnection())
@@ -23,7 +24,7 @@ namespace rabbitMQ_Consumer_Console
 				channel.QueueDeclare(queue: "MyQueue1",
 									 durable: false,
 									 exclusive: false,
-									 autoDelete: false,
+									 autoDelete: true,
 									 arguments: null);
 
 				var consumer = new EventingBasicConsumer(channel);
