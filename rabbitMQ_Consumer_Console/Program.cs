@@ -24,7 +24,7 @@ namespace rabbitMQ_Consumer_Console
 				channel.QueueDeclare(queue: "MyQueue1",
 									 durable: false,
 									 exclusive: false,
-									 autoDelete: true,
+									 autoDelete: false,
 									 arguments: null);
 
 				var consumer = new EventingBasicConsumer(channel);

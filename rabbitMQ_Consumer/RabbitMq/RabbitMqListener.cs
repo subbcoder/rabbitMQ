@@ -32,7 +32,7 @@ namespace rabbitMQ_Consumer.RabbitMq
 			string sQueueName = "MyQueue";
 			string sКoutingKey = "my_key";
 
-			_channel.ExchangeDeclarePassive(sExchangeName);
+			//_channel.ExchangeDeclarePassive(sExchangeName);
 
 
 			//QueueDeclareOk ok = _channel.QueueDeclarePassive(sQueueName);
@@ -53,16 +53,16 @@ namespace rabbitMQ_Consumer.RabbitMq
 						queue: sQueueName, 
 						durable: false, 
 						exclusive: false, 
-						autoDelete: true, 
+						autoDelete: false, 
 						arguments: null
 					);
 				// Bind the queue to the exchange
-				_channel.QueueBind(
-						queue: sQueueName,
-						exchange: sExchangeName,
-						routingKey: sКoutingKey,
-						arguments: null
-					);
+				//_channel.QueueBind(
+				//		queue: sQueueName,
+				//		exchange: sExchangeName,
+				//		routingKey: sКoutingKey,
+				//		arguments: null
+				//	);
 
 			}
 			// Хотя это все извращение.
@@ -75,20 +75,32 @@ namespace rabbitMQ_Consumer.RabbitMq
 			stoppingToken.ThrowIfCancellationRequested();
 
 			var consumer = new EventingBasicConsumer(_channel);
-			consumer.Received += (ch, ea) =>
-			{
-				var content = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-				// Каким-то образом обрабатываем полученное сообщение
-				Console.WriteLine($"Получено сообщение: {content}");
+			consumer.Received += OnConsumerReceived;
+			//consumer.Received += (ch, ea) =>
+			//{
+			//	var content = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-				_channel.BasicAck(ea.DeliveryTag, false);
-			};
+			//	// Каким-то образом обрабатываем полученное сообщение
+			//	Console.WriteLine($"Получено сообщение: {content}");
+
+			//	_channel.BasicAck(ea.DeliveryTag, false);
+			//};
 
 			_channel.BasicConsume("MyQueue", false, consumer);
 
 			return Task.CompletedTask;
 		}
+
+        private void OnConsumerReceived(object sender, BasicDeliverEventArgs ea)
+        {
+            var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+
+            // Каким-то образом обрабатываем полученное сообщение
+            Console.WriteLine($"Получено сообщение: {content}");
+
+            _channel.BasicAck(ea.DeliveryTag, false);
+        }
 
 		public override void Dispose()
 		{

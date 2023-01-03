@@ -4,7 +4,9 @@ using System.Text.Json;
 
 namespace rabbitMQ
 {
-    public interface IRabbitMqService
+	// RabbitMQ + 1С. Быстрый старт
+	// https://infostart.ru/public/845345/
+	public interface IRabbitMqService
 	{
 		void SendMessage(object obj);
 		void SendMessage(string message);
@@ -35,8 +37,9 @@ namespace rabbitMQ
 			{
                 channel.ExchangeDeclare(
                     exchange: "my_exchange",
-                    type: "fanout", //  topic  direct
-                    durable: false,
+                    type: "direct", //  topic   fanout
+                    durable: true,
+					//internal: true,
                     autoDelete: false,
                     arguments: null
                 );
@@ -45,14 +48,14 @@ namespace rabbitMQ
                 channel.QueueDeclare(queue: "MyQueue",
 							   durable: false,
 							   exclusive: false,
-							   autoDelete: true,
+							   autoDelete: false,
 							   arguments: null
 							);
 
 				channel.QueueDeclare(queue: "MyQueue1",
 							   durable: false,
 							   exclusive: false,
-							   autoDelete: true,
+							   autoDelete: false,
 							   arguments: null
 							);
 
@@ -74,7 +77,7 @@ namespace rabbitMQ
                 channel.QueueBind(
                                 queue: "MyQueue1",
                                 exchange: "my_exchange",
-                                routingKey: "my_keys",
+                                routingKey: "my_key",
                                 arguments: null
                             );
 
